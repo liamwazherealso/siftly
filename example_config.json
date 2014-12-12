@@ -1,0 +1,20 @@
+{
+
+	"download_path": "/home/liam/Downloads", 
+
+	"host_path" : "/home/liam", 
+
+	"extensions": {
+
+	"Pictures" : [".jpeg", ".jpg", ".gif", ".png"],
+        
+	"Archive" : [".tar", ".bz2", ".gz", ".zip"],
+ 
+        "Documents" : [ ".txt", ".odt", ".pdf"],
+        
+	"WebDocuments" : [".xml", ".html"],
+
+        "Applications": ["", ".exe"]
+ 	}
+
+}
