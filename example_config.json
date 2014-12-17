@@ -2,8 +2,8 @@
 
 	"download_path": "/home/liam/Downloads",
 
-	"extensions": {
 
+	"extensions": {
 
     "/home/liam/Music" : [".wav", ".mp3"],
 
