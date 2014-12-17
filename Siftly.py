@@ -44,21 +44,19 @@ class Siftly():
                                                                 ' no) ') == 'y':
                         os.makedirs(key)
                     else:
+                        self.extensions.remove(key)
                         print "Directory not made."
 
             # checks through the files in the dwnld dir to see if they match any of the extensions and moves them.
             for key in self.extensions:
                 for extension in self.extensions[key]:
                     for file_name in glob.glob(self.dwnld + '/*' + extension):
-                        # not a great solution if there are many duplicates but fuck it
-                        if os.path.isfile(os.path.join(key, file_name)):
-                            file_name = '_' + file_name
 
                         if len(sys.argv) > 1 and 'v' in sys.argv[1]: # verbose
                             print 'Moving ' + file_name + ' to' + key
 
                         logging.info('Moving ' + file_name + ' to ' + key)
-                        print '1' + file_name
+
                         shutil.move(file_name, key)
 
             # checking remaining files to determine if they are a folder, I assume folder are applications
