@@ -12,8 +12,12 @@ class Siftly():
 
     def __init__(self):
         # load stored configuration from the config.json file
+        if not os.path.exists('./config.json'):
+            logging.info('Config.json not found using example_config.json.')
+            shutil.copy('./example_config.json', './config.json')
+
         self.config = json.load(open('config.json'))
-        self.extensions = self,config['extensions']
+        self.extensions = self.config['extensions']
         self.dwnld = os.path.normpath(self.config['download_path'])
         self.test = False
 
@@ -36,7 +40,8 @@ class Siftly():
         if os.path.exists(self.dwnld):
             for key in self.extensions:
                 if not os.path.exists(key):
-                    if raw_input('Folder ' + key + ' does not exist, would you like to create one? (yes or no) ') == 'y':
+                    if self.test or raw_input('Folder ' + key + ' does not exist, would you like to create one? (yes or'
+                                                                ' no) ') == 'y':
                         os.makedirs(key)
                     else:
                         print "Directory not made."
@@ -45,12 +50,16 @@ class Siftly():
             for key in self.extensions:
                 for extension in self.extensions[key]:
                     for file_name in glob.glob(self.dwnld + '/*' + extension):
+                        # not a great solution if there are many duplicates but fuck it
+                        if os.path.isfile(os.path.join(key, file_name)):
+                            file_name = '_' + file_name
+
                         if len(sys.argv) > 1 and 'v' in sys.argv[1]: # verbose
                             print 'Moving ' + file_name + ' to' + key
 
-                        if not self.test:
-                            logging.info('Moving ' + file_name + ' to' + key)
-                            shutil.move(file_name, key)
+                        logging.info('Moving ' + file_name + ' to ' + key)
+                        print '1' + file_name
+                        shutil.move(file_name, key)
 
             # checking remaining files to determine if they are a folder, I assume folder are applications
             for file_name in os.listdir(self.dwnld):
