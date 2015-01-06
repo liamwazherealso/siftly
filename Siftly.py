@@ -36,12 +36,12 @@ class Siftly(QtGui.QMainWindow):
         if os.path.exists(self.dwnld):
             for key in self.extensions:
                 if not os.path.exists(key):
-                    if self.test or raw_input('Folder ' + key + ' does not exist, would you like to create one? (yes or'
+                    if self.test or input('Folder ' + key + ' does not exist, would you like to create one? (yes or'
                                                                 ' no) ') == 'y':
                         os.makedirs(key)
                     else:
                         self.extensions.remove(key)
-                        print "Directory not made."
+                        print("Directory not made.")
 
             # checks through the files in the dwnld dir to see if they match any of the extensions and moves them.
             for key in self.extensions:
@@ -49,7 +49,7 @@ class Siftly(QtGui.QMainWindow):
                     for file_name in glob.glob(self.dwnld + '/*' + extension):
 
                         if len(sys.argv) > 1 and 'v' in sys.argv[1]: # verbose
-                            print 'Moving ' + file_name + ' to' + key
+                            print('Moving ' + file_name + ' to' + key)
 
                         logging.info('Moving ' + file_name + ' to ' + key)
 
@@ -61,8 +61,8 @@ class Siftly(QtGui.QMainWindow):
                     logging.info('Moving ' + file_name + ' to' + self.extensions['Applications'])
 
         else:
-            print 'Failed to open: ' + self.dwnld + '\n'
-            dnwld = os.path.normpath(raw_input('Enter a new directory'))
+            print('Failed to open: ' + self.dwnld + '\n')
+            dnwld = os.path.normpath(input('Enter a new directory'))
 
 
     def __init__(self):
@@ -70,9 +70,7 @@ class Siftly(QtGui.QMainWindow):
         self.ui = Ui_Siftly()
         self.ui.setupUi(self)
 
-
-
-
+        #Connect to handler methods
         self.ui.sift_btn_select_folder.clicked.connect(self.folder_chooser)
         self.ui.logs_dump.clicked.connect(self.dump_logs)
         self.ui.sift_btn.clicked.connect(self.sift)
@@ -128,8 +126,6 @@ class Siftly(QtGui.QMainWindow):
         shutil.rmtree('log')
         os.makedirs('log')
         self.ui.sift_latest_log.setText('No log')
-
-
 
 
 if __name__ == '__main__':
