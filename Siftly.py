@@ -32,7 +32,6 @@ class Siftly(QtGui.QMainWindow):
 
         logging.basicConfig(filename=fname, level=logging.INFO)
 
-    def run(self):
         if os.path.exists(self.dwnld):
             for key in self.extensions:
                 if not os.path.exists(key):
