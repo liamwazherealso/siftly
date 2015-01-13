@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import sys
+
 import os
 import glob
 import shutil
@@ -59,7 +59,7 @@ logging.basicConfig(filename=fname, level=logging.INFO)
 if os.path.exists(dwnld):
     for key in extensions:
         if not os.path.exists(key):
-            if test or input('Folder ' + key + ' does not exist, would you like to create one? (yes or'
+            if input('Folder ' + key + ' does not exist, would you like to create one? (yes or'
                                                         ' no) ') == 'y':
                 os.makedirs(key)
             else:
