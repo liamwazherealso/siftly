@@ -73,10 +73,11 @@ if os.path.exists(dwnld):
 
                 if len(sys.argv) > 1 and 'v' in sys.argv[1]: # verbose
                     print('Moving ' + file_name + ' to' + key)
-
-                logging.info('Moving ' + file_name + ' to ' + key)
-
-                shutil.move(file_name, key)
+                try:
+                    logging.info('Moving ' + file_name + ' to ' + key)
+                    shutil.move(file_name, key)
+                except:
+                    logging.error("Failed to move " + str(file_name))
 
     # checking remaining files to determine if they are a folder, I assume folder are applications
     for file_name in os.listdir(dwnld):
