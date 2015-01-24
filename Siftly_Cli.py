@@ -9,24 +9,14 @@ import sys
 
 from datetime import datetime
 
-
-current_log = glob.glob("log/*")
-
-if len(current_log) > 0:
-    current_log = open(current_log[0], 'r').read()
-else:
-    current_log = "No log"
-
 # load stored configuration from the config.json file
 if not os.path.exists('./config.json'):
     logging.info('Config.json not found using example_config.json.')
     shutil.copy('./example_config.json', './config.json')
 
-
 config = json.load(open('config.json'))
 extensions = config['extensions']
 dwnld = os.path.normpath(config['download_path'])
-
 
 # logs are stored by the date then the time in the log folder
 current_date = datetime.today().strftime('%y_%m_%d_%H_%M')
@@ -40,19 +30,15 @@ fname = 'log/' + current_date + '.log'
 file = open(fname, 'w')
 file.close()
 
-
 logging.basicConfig(filename=fname, level=logging.INFO)
-
 
 # logs are stored by the date then the time in the log folder
 current_date = datetime.today().strftime('%y_%m_%d_%H_%M')
-
 
 # touch file
 fname = 'log/' + current_date + '.log'
 file = open(fname, 'w')
 file.close()
-
 
 logging.basicConfig(filename=fname, level=logging.INFO)
 
