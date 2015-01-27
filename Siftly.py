@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import sys
+
 import os
 import glob
 import shutil
@@ -47,9 +47,11 @@ class Siftly(QtGui.QMainWindow):
 
         logging.basicConfig(filename=fname, level=logging.INFO)
 
-        while not os.path.exists(self.dwnld):
-            print('Failed to open: ' + self.dwnld + '\n')
-            self.dnwld = os.path.normpath(input('Enter a new directory'))
+        if not os.path.exists(self.dwnld):
+            self.dwnld = self.prompt_text_val
+            self.ui.prompt_text.setText('Failed to open: ' + self.dwnld + ', enter a new directory')
+            if not os.path.exists(self.dwnld):
+                return
 
         for key in self.extensions:
             if not os.path.exists(key):
@@ -92,6 +94,8 @@ class Siftly(QtGui.QMainWindow):
         self.ui.sift_btn_select_folder.clicked.connect(self.folder_chooser)
         self.ui.logs_dump.clicked.connect(self.dump_logs)
         self.ui.sift_btn.clicked.connect(self.sift)
+        self.ui.prompt_ent.clicked.connect(self.prompt_ent)
+        self.prompt_text_val = ''
 
         current_log = glob.glob("log/*")
         current_log.sort()
@@ -113,6 +117,9 @@ class Siftly(QtGui.QMainWindow):
         self.dwnld = os.path.normpath(self.config['download_path'])
 
         self.ui.sift_folder.setText(self.dwnld)
+
+    def prompt_ent(self):
+        self.prompt_text_val = self.ui.Sift_Prompt.text()
 
     def folder_chooser(self):
         """
