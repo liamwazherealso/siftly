@@ -14,6 +14,21 @@ from datetime import datetime
 
 class Siftly(QtGui.QMainWindow):
     def sift(self):
+        # logs are stored by the date then the time in the log folder
+        current_date = datetime.today().strftime('%y_%m_%d_%H_%M')
+
+        # create log folder if it is not there.
+        if not os.path.exists('log'):
+            os.makedirs('log')
+
+        # touch file
+        fname = 'log/' + current_date + '.log'
+        file = open(fname, 'w')
+        file.close()
+
+
+        logging.basicConfig(filename=fname, level=logging.INFO)
+
         # load stored configuration from the config.json file
         config = json.load(open('config.json'))
         extensions = config['extensions']
@@ -32,38 +47,41 @@ class Siftly(QtGui.QMainWindow):
 
         logging.basicConfig(filename=fname, level=logging.INFO)
 
-        if os.path.exists(self.dwnld):
-            for key in self.extensions:
-                if not os.path.exists(key):
-                    if self.test or input('Folder ' + key + ' does not exist, would you like to create one? (yes or'
-                                                                ' no) ') == 'y':
-                        os.makedirs(key)
-                    else:
-                        self.extensions.remove(key)
-                        print("Directory not made.")
-
-            # checks through the files in the dwnld dir to see if they match any of the extensions and moves them.
-            for key in self.extensions:
-                for extension in self.extensions[key]:
-                    for file_name in glob.glob(self.dwnld + '/*' + extension):
-
-                        if len(sys.argv) > 1 and 'v' in sys.argv[1]: # verbose
-                            print('Moving ' + file_name + ' to' + key)
-                try:
-                    logging.info('Moving ' + file_name + ' to ' + key)
-                    shutil.move(file_name, key)
-                except:
-                    logging.error("Failed to move " + str(file_name))
-
-            # checking remaining files to determine if they are a folder, I assume folder are applications
-            for file_name in os.listdir(self.dwnld):
-                if os.path.isdir(os.path.join(self.dwnld, file_name)) and 'Applications' in self.extensions:
-                    logging.info('Moving ' + file_name + ' to' + self.extensions['Applications'])
-
-        else:
+        while not os.path.exists(self.dwnld):
             print('Failed to open: ' + self.dwnld + '\n')
-            dnwld = os.path.normpath(input('Enter a new directory'))
+            self.dnwld = os.path.normpath(input('Enter a new directory'))
 
+        for key in self.extensions:
+            if not os.path.exists(key):
+                if self.test or input('Folder ' + key + ' does not exist, would you like to create one? (yes or'
+                                                            ' no) ') == 'y':
+                    os.makedirs(key)
+                else:
+                    self.extensions.remove(key)
+                    print("Directory not made.")
+
+        # checks through the files in the dwnld dir to see if they match any of the extensions and moves them.
+        for key in self.extensions:
+            for extension in self.extensions[key]:
+                for file_name in glob.glob(self.dwnld + '/*' + extension):
+
+                    if len(sys.argv) > 1 and 'v' in sys.argv[1]: # verbose
+                        print('Moving ' + file_name + ' to' + key)
+                    try:
+                        logging.info('Moving ' + file_name + ' to ' + key)
+                        shutil.move(file_name, key)
+                    except:
+                         logging.error("Failed to move " + str(file_name))
+
+        # checking remaining files to determine if they are a folder, I assume folder are applications
+        for file_name in os.listdir(self.dwnld):
+            if os.path.isdir(os.path.join(self.dwnld, file_name)) and 'Applications' in self.extensions:
+                logging.info('Moving ' + file_name + ' to' + self.extensions['Applications'])
+
+        current_log = glob.glob("log/*")
+        current_log.reverse()
+        current_log = open(current_log[0], 'r').read()
+        self.ui.sift_latest_log.setText(current_log)
 
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
@@ -74,13 +92,14 @@ class Siftly(QtGui.QMainWindow):
         self.ui.sift_btn_select_folder.clicked.connect(self.folder_chooser)
         self.ui.logs_dump.clicked.connect(self.dump_logs)
         self.ui.sift_btn.clicked.connect(self.sift)
+
         current_log = glob.glob("log/*")
-
-
+        current_log.sort()
         if len(current_log) > 0:
-            current_log = open(current_log[0], 'r').read()
+            current_log = open(current_log[len(current_log) - 1], 'r').read()
         else:
             current_log = "No log"
+
         self.ui.sift_latest_log.setText(current_log)
 
         # load stored configuration from the config.json file
@@ -94,21 +113,6 @@ class Siftly(QtGui.QMainWindow):
         self.dwnld = os.path.normpath(self.config['download_path'])
 
         self.ui.sift_folder.setText(self.dwnld)
-
-        # logs are stored by the date then the time in the log folder
-        current_date = datetime.today().strftime('%y_%m_%d_%H_%M')
-
-        # create log folder if it is not there.
-        if not os.path.exists('log'):
-            os.makedirs('log')
-
-        # touch file
-        fname = 'log/' + current_date + '.log'
-        file = open(fname, 'w')
-        file.close()
-
-
-        logging.basicConfig(filename=fname, level=logging.INFO)
 
     def folder_chooser(self):
         """
