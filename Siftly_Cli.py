@@ -9,13 +9,22 @@ import sys
 
 from datetime import datetime
 
+"""
+logging - used to make a log file for what happened
+json - Javascript Object Format is used to save what folders extentions should go in
+glob - for string pattern matching with *
+"""
 # load stored configuration from the config.json file
+# Check that the path exists
 if not os.path.exists('./config.json'):
-    logging.info('Config.json not found using example_config.json.')
+    # use the basic log file instead
     shutil.copy('./example_config.json', './config.json')
 
+# JSON is like a dictionary
 config = json.load(open('config.json'))
+# load a list of
 extensions = config['extensions']
+# load the path to download from
 dwnld = os.path.normpath(config['download_path'])
 
 # logs are stored by the date then the time in the log folder
@@ -30,6 +39,7 @@ fname = 'log/' + current_date + '.log'
 file = open(fname, 'w')
 file.close()
 
+# set the log to write to the file
 logging.basicConfig(filename=fname, level=logging.INFO)
 
 # logs are stored by the date then the time in the log folder
@@ -43,6 +53,7 @@ file.close()
 logging.basicConfig(filename=fname, level=logging.INFO)
 
 if os.path.exists(dwnld):
+    # iterate through the paths that the files should be going to and check that they exists
     for key in extensions:
         if not os.path.exists(key):
             if input('Folder ' + key + ' does not exist, would you like to create one? (yes or'
@@ -54,6 +65,7 @@ if os.path.exists(dwnld):
 
     # checks through the files in the dwnld dir to see if they match any of the extensions and moves them.
     for key in extensions:
+        # iterate through the lists of extentions
         for extension in extensions[key]:
             for file_name in glob.glob(dwnld + '/*' + extension):
 
